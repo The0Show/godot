@@ -155,7 +155,7 @@ public:
 	virtual void open_midi_inputs();
 	virtual void close_midi_inputs();
 
-	virtual void alert(const String &p_alert, const String &p_title = "ALERT!");
+	virtual void alert(const String &p_alert, const String &p_title = "Engine Notification");
 
 	struct GDExtensionData {
 		bool also_set_library_path = false;

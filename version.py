@@ -1,9 +1,9 @@
-short_name = "godot"
-name = "Godot Engine"
+short_name = "trigine"
+name = "Trigine"
 major = 4
-minor = 4
+minor = 3
 patch = 0
 status = "dev"
 module_config = ""
-website = "https://godotengine.org"
+website = "https://tripeak.org"
 docs = "latest"

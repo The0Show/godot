@@ -1191,14 +1191,14 @@ void ProjectExportDialog::_export_pck_zip_selected(const String &p_path) {
 		} else {
 			platform->export_zip(current, export_debug, p_path);
 		}
-	} else if (p_path.ends_with(".pck")) {
+	} else if (p_path.ends_with(".tpk")) {
 		if (export_as_patch) {
 			platform->export_pack_patch(current, export_debug, p_path);
 		} else {
 			platform->export_pack(current, export_debug, p_path);
 		}
 	} else {
-		ERR_FAIL_MSG("Path must end with .pck or .zip");
+		ERR_FAIL_MSG("Path must end with .tpk or .zip");
 	}
 }
 
@@ -1551,7 +1551,7 @@ ProjectExportDialog::ProjectExportDialog() {
 	patch_vb->add_margin_child(TTR("Base Packs:"), patches, true);
 
 	patch_dialog = memnew(EditorFileDialog);
-	patch_dialog->add_filter("*.pck", TTR("Godot Project Pack"));
+	patch_dialog->add_filter("*.tpk", TTR("Tripeak Project Pack"));
 	patch_dialog->set_access(EditorFileDialog::ACCESS_FILESYSTEM);
 	patch_dialog->set_file_mode(EditorFileDialog::FILE_MODE_OPEN_FILE);
 	patch_dialog->connect("file_selected", callable_mp(this, &ProjectExportDialog::_patch_file_selected));
@@ -1694,7 +1694,7 @@ ProjectExportDialog::ProjectExportDialog() {
 
 	export_pck_zip = memnew(EditorFileDialog);
 	export_pck_zip->add_filter("*.zip", TTR("ZIP File"));
-	export_pck_zip->add_filter("*.pck", TTR("Godot Project Pack"));
+	export_pck_zip->add_filter("*.tpk", TTR("Tripeak Project Pack"));
 	export_pck_zip->set_access(EditorFileDialog::ACCESS_FILESYSTEM);
 	export_pck_zip->set_file_mode(EditorFileDialog::FILE_MODE_SAVE_FILE);
 	add_child(export_pck_zip);

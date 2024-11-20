@@ -191,7 +191,7 @@ Error EditorExportPlatform::_load_patches(const Vector<String> &p_patches) {
 	Error err = OK;
 	if (!p_patches.is_empty()) {
 		for (const String &path : p_patches) {
-			err = PackedData::get_singleton()->add_pack(path, true, 0);
+			err = PackedData::get_singleton()->add_pack(path, true, 0, "res://");
 			if (err != OK) {
 				add_message(EXPORT_MESSAGE_ERROR, TTR("Patch Creation"), vformat(TTR("Could not load patch pack with path \"%s\"."), path));
 				return err;
@@ -1778,10 +1778,10 @@ Error EditorExportPlatform::save_pack(const Ref<EditorExportPreset> &p_preset, b
 	int64_t pck_start_pos = f->get_position();
 
 	f->store_32(PACK_HEADER_MAGIC);
-	f->store_32(PACK_FORMAT_VERSION);
-	f->store_32(VERSION_MAJOR);
-	f->store_32(VERSION_MINOR);
-	f->store_32(VERSION_PATCH);
+	f->store_8(PACK_FORMAT_VERSION);
+	f->store_8(VERSION_MAJOR);
+	f->store_8(VERSION_MINOR);
+	f->store_8(VERSION_PATCH);
 
 	uint32_t pack_flags = 0;
 	bool enc_pck = p_preset->get_enc_pck();

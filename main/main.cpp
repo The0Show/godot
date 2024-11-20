@@ -559,7 +559,7 @@ void Main::print_help(const char *p_binary) {
 	print_help_option("-l, --language <locale>", "Use a specific locale (<locale> being a two-letter code).\n");
 	print_help_option("--path <directory>", "Path to a project (<directory> must contain a \"project.godot\" file).\n");
 	print_help_option("-u, --upwards", "Scan folders upwards for project.godot file.\n");
-	print_help_option("--main-pack <file>", "Path to a pack (.pck) file to load.\n");
+	print_help_option("--main-pack <file>", "Path to a pack (.tpk) file to load.\n");
 	print_help_option("--render-thread <mode>", "Render thread mode (\"unsafe\", \"safe\", \"separate\").\n");
 	print_help_option("--remote-fs <address>", "Remote filesystem (<host/IP>[:<port>] address).\n");
 	print_help_option("--remote-fs-password <password>", "Password for remote filesystem.\n");
@@ -1849,9 +1849,9 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 #ifdef TOOLS_ENABLED
 		editor = false;
 #else
-		const String error_msg = "Error: Couldn't load project data at path \"" + project_path + "\". Is the .pck file missing?\nIf you've renamed the executable, the associated .pck file should also be renamed to match the executable's name (without the extension).\n";
-		OS::get_singleton()->print("%s", error_msg.utf8().get_data());
-		OS::get_singleton()->alert(error_msg);
+		OS::get_singleton()->print("Failed to load project data (%s)\n", project_path);
+		const String error_msg = "Couldn't load project data.\nThe root package file may be missing.\n";
+		OS::get_singleton()->alert(error_msg, "Engine Error");
 
 		goto error;
 #endif
@@ -1957,9 +1957,9 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 #ifdef TOOLS_ENABLED
 		if (!editor && !project_manager) {
 #endif
-			const String error_msg = "Error: Can't run project: no main scene defined in the project.\n";
+			const String error_msg = "No main scene defined in the project.\nThe game cannot start.\n";
 			OS::get_singleton()->print("%s", error_msg.utf8().get_data());
-			OS::get_singleton()->alert(error_msg);
+			OS::get_singleton()->alert(error_msg, "Engine Error");
 			goto error;
 #ifdef TOOLS_ENABLED
 		}

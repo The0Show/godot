@@ -37,9 +37,9 @@
 
 #include <stdio.h>
 
-Error PackedData::add_pack(const String &p_path, bool p_replace_files, uint64_t p_offset) {
+Error PackedData::add_pack(const String &p_path, bool p_replace_files, uint64_t p_offset, String p_root) {
 	for (int i = 0; i < sources.size(); i++) {
-		if (sources[i]->try_open_pack(p_path, p_replace_files, p_offset)) {
+		if (sources[i]->try_open_pack(p_path, p_replace_files, p_offset, p_root)) {
 			return OK;
 		}
 	}
@@ -147,7 +147,7 @@ PackedData::~PackedData() {
 
 //////////////////////////////////////////////////////////////////
 
-bool PackedSourcePCK::try_open_pack(const String &p_path, bool p_replace_files, uint64_t p_offset) {
+bool PackedSourcePCK::try_open_pack(const String &p_path, bool p_replace_files, uint64_t p_offset, String root) {
 	Ref<FileAccess> f = FileAccess::open(p_path, FileAccess::READ);
 	if (f.is_null()) {
 		return false;
@@ -218,10 +218,10 @@ bool PackedSourcePCK::try_open_pack(const String &p_path, bool p_replace_files, 
 
 	int64_t pck_start_pos = f->get_position() - 4;
 
-	uint32_t version = f->get_32();
-	uint32_t ver_major = f->get_32();
-	uint32_t ver_minor = f->get_32();
-	f->get_32(); // patch number, not used for validation.
+	uint32_t version = f->get_8();
+	uint32_t ver_major = f->get_8();
+	uint32_t ver_minor = f->get_8();
+	f->get_8(); // patch number, not used for validation.
 
 	ERR_FAIL_COND_V_MSG(version != PACK_FORMAT_VERSION, false, vformat("Pack version unsupported: %d.", version));
 	ERR_FAIL_COND_V_MSG(ver_major > VERSION_MAJOR || (ver_major == VERSION_MAJOR && ver_minor > VERSION_MINOR), false, vformat("Pack created with a newer version of the engine: %d.%d.", ver_major, ver_minor));
@@ -275,7 +275,14 @@ bool PackedSourcePCK::try_open_pack(const String &p_path, bool p_replace_files, 
 		f->get_buffer(md5, 16);
 		uint32_t flags = f->get_32();
 
-		PackedData::get_singleton()->add_path(p_path, path, ofs + p_offset, size, md5, this, p_replace_files, (flags & PACK_FILE_ENCRYPTED));
+		String final_path;
+		if(!path.contains(".godot")){
+			final_path = path.replace("res://", root + "/");
+		} else {
+			final_path = path;
+		}
+
+		PackedData::get_singleton()->add_path(p_path, final_path, ofs + p_offset, size, md5, this, p_replace_files, (flags & PACK_FILE_ENCRYPTED));
 	}
 
 	return true;

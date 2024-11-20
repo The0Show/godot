@@ -388,7 +388,7 @@ Error OS_Windows::open_dynamic_library(const String &p_path, void *&p_library_ha
 
 	if (!FileAccess::exists(path)) {
 		//this code exists so gdextension can load .dll files from within the executable path
-		path = get_executable_path().get_base_dir().path_join(p_path.get_file());
+		path = get_executable_path().get_base_dir().path_join("/lib/" + p_path.get_file());
 	}
 	// Path to load from may be different from original if we make copies.
 	String load_path = path;

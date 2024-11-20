@@ -6497,13 +6497,11 @@ DisplayServer *DisplayServerWindows::create_func(const String &p_rendering_drive
 			}
 			String executable_name = OS::get_singleton()->get_executable_path().get_file();
 			OS::get_singleton()->alert(
-					vformat("Your video card drivers seem not to support the required %s version.\n\n"
-							"If possible, consider updating your video card drivers or using the OpenGL 3 driver.\n\n"
-							"You can enable the OpenGL 3 driver by starting the engine from the\n"
-							"command line with the command:\n\n    \"%s\" --rendering-driver opengl3\n\n"
+					vformat(
+							"Your video card drivers don't seem to support %s.\n"
+							"If possible, consider updating your video card drivers.\n\n"
 							"If you have recently updated your video card drivers, try rebooting.",
-							String(" or ").join(drivers),
-							executable_name),
+							String(" or ").join(drivers)),
 					"Unable to initialize video driver");
 		} else {
 			Vector<String> drivers;
@@ -6515,7 +6513,7 @@ DisplayServer *DisplayServerWindows::create_func(const String &p_rendering_drive
 			}
 			OS::get_singleton()->alert(
 					vformat(
-							"Your video card drivers seem not to support the required %s version.\n\n"
+							"Your video card drivers don't seem to support %s.\n"
 							"If possible, consider updating your video card drivers.\n\n"
 							"If you have recently updated your video card drivers, try rebooting.",
 							String(" or ").join(drivers)),

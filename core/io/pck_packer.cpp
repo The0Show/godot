@@ -89,10 +89,10 @@ Error PCKPacker::pck_start(const String &p_pck_path, int p_alignment, const Stri
 	alignment = p_alignment;
 
 	file->store_32(PACK_HEADER_MAGIC);
-	file->store_32(PACK_FORMAT_VERSION);
-	file->store_32(VERSION_MAJOR);
-	file->store_32(VERSION_MINOR);
-	file->store_32(VERSION_PATCH);
+	file->store_8(PACK_FORMAT_VERSION);
+	file->store_8(VERSION_MAJOR);
+	file->store_8(VERSION_MINOR);
+	file->store_8(VERSION_PATCH);
 
 	uint32_t pack_flags = 0;
 	if (enc_dir) {

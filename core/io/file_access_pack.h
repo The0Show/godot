@@ -39,9 +39,9 @@
 #include "core/templates/rb_map.h"
 
 // Godot's packed file magic header ("GDPC" in ASCII).
-#define PACK_HEADER_MAGIC 0x43504447
+#define PACK_HEADER_MAGIC 0x4b5074
 // The current packed file format version number.
-#define PACK_FORMAT_VERSION 2
+#define PACK_FORMAT_VERSION 1
 
 enum PackFlags {
 	PACK_DIR_ENCRYPTED = 1 << 0,
@@ -117,7 +117,7 @@ public:
 	_FORCE_INLINE_ bool is_disabled() const { return disabled; }
 
 	static PackedData *get_singleton() { return singleton; }
-	Error add_pack(const String &p_path, bool p_replace_files, uint64_t p_offset);
+	Error add_pack(const String &p_path, bool p_replace_files, uint64_t p_offset, String p_root);
 
 	void clear();
 
@@ -133,14 +133,14 @@ public:
 
 class PackSource {
 public:
-	virtual bool try_open_pack(const String &p_path, bool p_replace_files, uint64_t p_offset) = 0;
+	virtual bool try_open_pack(const String &p_path, bool p_replace_files, uint64_t p_offset, String root) = 0;
 	virtual Ref<FileAccess> get_file(const String &p_path, PackedData::PackedFile *p_file) = 0;
 	virtual ~PackSource() {}
 };
 
 class PackedSourcePCK : public PackSource {
 public:
-	virtual bool try_open_pack(const String &p_path, bool p_replace_files, uint64_t p_offset) override;
+	virtual bool try_open_pack(const String &p_path, bool p_replace_files, uint64_t p_offset, String root) override;
 	virtual Ref<FileAccess> get_file(const String &p_path, PackedData::PackedFile *p_file) override;
 };
 

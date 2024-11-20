@@ -467,12 +467,12 @@ void ProjectSettings::_emit_changed() {
 	emit_signal("settings_changed");
 }
 
-bool ProjectSettings::_load_resource_pack(const String &p_pack, bool p_replace_files, int p_offset) {
+bool ProjectSettings::_load_resource_pack(const String &p_pack, bool p_replace_files, int p_offset, String root) {
 	if (PackedData::get_singleton()->is_disabled()) {
 		return false;
 	}
 
-	bool ok = PackedData::get_singleton()->add_pack(p_pack, p_replace_files, p_offset) == OK;
+	bool ok = PackedData::get_singleton()->add_pack(p_pack, p_replace_files, p_offset, root) == OK;
 
 	if (!ok) {
 		return false;
@@ -599,20 +599,20 @@ Error ProjectSettings::_setup(const String &p_path, const String &p_main_pack, b
 #ifdef MACOS_ENABLED
 		if (!found) {
 			// Attempt to load PCK from macOS .app bundle resources.
-			found = _load_resource_pack(OS::get_singleton()->get_bundle_resource_dir().path_join(exec_basename + ".pck")) || _load_resource_pack(OS::get_singleton()->get_bundle_resource_dir().path_join(exec_filename + ".pck"));
+			found = _load_resource_pack(OS::get_singleton()->get_bundle_resource_dir().path_join(exec_basename + ".tpk")) || _load_resource_pack(OS::get_singleton()->get_bundle_resource_dir().path_join(exec_filename + ".tpk"));
 		}
 #endif
 
 		if (!found) {
 			// Try to load data pack at the location of the executable.
 			// As mentioned above, we have two potential names to attempt.
-			found = _load_resource_pack(exec_dir.path_join(exec_basename + ".pck")) || _load_resource_pack(exec_dir.path_join(exec_filename + ".pck"));
+			found = _load_resource_pack(exec_dir.path_join(exec_basename + ".tpk")) || _load_resource_pack(exec_dir.path_join(exec_filename + ".tpk"));
 		}
 
 		if (!found) {
 			// If we couldn't find them next to the executable, we attempt
 			// the current working directory. Same story, two tests.
-			found = _load_resource_pack(exec_basename + ".pck") || _load_resource_pack(exec_filename + ".pck");
+			found = _load_resource_pack(exec_basename + ".tpk") || _load_resource_pack(exec_filename + ".tpk");
 		}
 
 		// If we opened our package, try and load our project.
@@ -1388,7 +1388,7 @@ void ProjectSettings::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("localize_path", "path"), &ProjectSettings::localize_path);
 	ClassDB::bind_method(D_METHOD("globalize_path", "path"), &ProjectSettings::globalize_path);
 	ClassDB::bind_method(D_METHOD("save"), &ProjectSettings::save);
-	ClassDB::bind_method(D_METHOD("load_resource_pack", "pack", "replace_files", "offset"), &ProjectSettings::_load_resource_pack, DEFVAL(true), DEFVAL(0));
+	ClassDB::bind_method(D_METHOD("load_resource_pack", "pack", "replace_files", "offset", "root"), &ProjectSettings::_load_resource_pack, DEFVAL(true), DEFVAL(0), DEFVAL("res://"));
 
 	ClassDB::bind_method(D_METHOD("save_custom", "file"), &ProjectSettings::_save_custom_bnd);
 

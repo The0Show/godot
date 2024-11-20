@@ -187,7 +187,7 @@ Error EditorExportPlatformPC::export_project_data(const Ref<EditorExportPreset> 
 	if (p_preset->get("binary_format/embed_pck")) {
 		pck_path = p_path;
 	} else {
-		pck_path = p_path.get_basename() + ".pck";
+		pck_path = p_path.get_basename() + ".tpk";
 	}
 
 	Vector<SharedObject> so_files;
@@ -216,10 +216,10 @@ Error EditorExportPlatformPC::export_project_data(const Ref<EditorExportPreset> 
 				target_path = p_path.get_base_dir().path_join(so_files[i].target);
 				da->make_dir_recursive(target_path);
 			}
-			target_path = target_path.path_join(src_path.get_file());
+			target_path = target_path.path_join("/lib/" + src_path.get_file());
 
 			if (da->dir_exists(src_path)) {
-				err = da->make_dir_recursive(target_path);
+				err = da->make_dir_recursive(target_path.get_base_dir());
 				if (err == OK) {
 					err = da->copy_dir(src_path, target_path, -1, true);
 					if (err != OK) {
@@ -227,12 +227,15 @@ Error EditorExportPlatformPC::export_project_data(const Ref<EditorExportPreset> 
 					}
 				}
 			} else {
-				err = da->copy(src_path, target_path);
-				if (err != OK) {
-					add_message(EXPORT_MESSAGE_ERROR, TTR("GDExtension"), TTR(vformat("Failed to copy shared object \"%s\".", src_path)));
-				}
-				if (err == OK) {
-					err = sign_shared_object(p_preset, p_debug, target_path);
+				err = da->make_dir_recursive(target_path.get_base_dir());
+				if(err == OK){
+					err = da->copy(src_path, target_path);
+					if (err != OK) {
+						add_message(EXPORT_MESSAGE_ERROR, TTR("GDExtension"), TTR(vformat("Failed to copy shared object \"%s\".", src_path)));
+					}
+					if (err == OK) {
+						err = sign_shared_object(p_preset, p_debug, target_path);
+					}
 				}
 			}
 		}
