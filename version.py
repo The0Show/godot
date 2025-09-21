@@ -1,9 +1,9 @@
-short_name = "godot"
-name = "Godot Engine"
-major = 4
-minor = 6
-patch = 0
-status = "dev"
+short_name = "ff2"
+name = "Furious Fletchlings 2"
+major = 6
+minor = 9
+patch = 420
+status = "stable"
 module_config = ""
 website = "https://godotengine.org"
 docs = "latest"
